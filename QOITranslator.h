@@ -39,7 +39,7 @@ public:
 								BMessage* settings, uint32 outType,
 								BPositionIO* target, int32 baseType);
 
-	virtual BView*			NewConfigView(TranslatorSettings* settings);                  
+	virtual BView*			NewConfigView(TranslatorSettings* settings);
 
 protected:
     virtual                 ~QOITranslator();
@@ -48,11 +48,11 @@ protected:
 		// the user.
 
 private:
-			status_t		_TranslateFromBits(BPositionIO* stream,
+			status_t		_TranslateFromQOI(BPositionIO* stream,
 								BMessage* settings, uint32 outType,
 								BPositionIO* target);
 
-			status_t		_TranslateFromQOI(BPositionIO* stream,
+			status_t		_TranslateFromBits(BPositionIO* stream,
 								BMessage* settings, uint32 outType,
 								BPositionIO* target);
 };

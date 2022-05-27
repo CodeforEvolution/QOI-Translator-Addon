@@ -5,16 +5,16 @@
 #ifndef QOI_DEFINITIONS_H
 #define QOI_DEFINITIONS_H
 
-/**************************************************************************************************
-My primary source for creating this fine QOI Image Translator:
-The Quite Ok Image (QOI) Format Specification: https://qoiformat.org/qoi-specification.pdf
-***************************************************************************************************/
+/*
+ * My primary source for creating this fine QOI Image Translator:
+ * The Quite Ok Image (QOI) Format Specification: https://qoiformat.org/qoi-specification.pdf
+ */
 
 /** QOI File Header **/
 
 // 'magic' Field -> qoi_header
 #define QOI_MAGIC_LENGTH 4 // Bytes
-static const char[QOI_MAGIC_LENGTH] QOI_MAGIC = "qoif";
+const uint32 kQOIMagic = "qoif";
 
 // 'channels' Field -> qoi_header
 #define QOI_RGB		3
@@ -25,7 +25,7 @@ static const char[QOI_MAGIC_LENGTH] QOI_MAGIC = "qoif";
 #define QOI_ALL_CHANNELS_LINEAR		1
 
 typedef struct {
-	char	magic[QOI_MAGIC_LENGTH];
+	uint32	magic;
 	uint32	width;
 		// Width in pixels - Big endian
 	uint32	height;
@@ -40,11 +40,13 @@ typedef struct {
 /** QOI Miscellaneous Types & Definitions **/
 
 #define PREVIOUS_PIXELS_LENGTH 64
-typedef uint8 previous_pixels[PREVIOUS_PIXELS_LENGTH];
 
-static inline uint8 pixel_to_index_hash(uint8 red, uint8 green, uint8 blue, uint8 alpha) {
-	return ((red * 3) + (green * 5) + (blue * 7) + (alpha * 11)) % PREVIOUS_PIXELS_LENGTH;
+static inline uint8 pixel_to_index_hash(rgb_color pixel) {
+	return ((pixel.red * 3) + (pixel.green * 5) + (pixel.blue * 7)
+		+ (pixel.alpha * 11)) % PREVIOUS_PIXELS_LENGTH;
 }
+
+#define QOI_2_BYTE_TAG_MASK 0b00000011
 
 
 /** QOI_OP_RGB Chunk **/
@@ -93,6 +95,8 @@ typedef struct {
 	uint8 blue_diff		: 2;
 } qoi_op_diff;
 
+#define DIFF_BIAS (-2)
+
 
 /** QOI_OP_LUMA Chunk **/
 
@@ -114,5 +118,8 @@ typedef struct {
 	uint8 tag : 2;
 	uint8 run : 6;
 } qoi_op_run;
+
+#define RUN_BIAS (-1)
+
 
 #endif // QOI_DEFINITIONS_H
